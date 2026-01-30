@@ -67,9 +67,15 @@ function sumPurchasable(timeslots) {
     });
   }
 
-  await page.request.post(WEBHOOK_URL, {
-    data: { secret: SECRET, rows },
-  });
+  const hookResp = await page.request.post(WEBHOOK_URL, {
+  headers: { "content-type": "application/json" },
+  data: JSON.stringify({ secret: SECRET, rows }),
+});
+
+const hookText = await hookResp.text();
+console.log("WEBHOOK_STATUS", hookResp.status());
+console.log("WEBHOOK_BODY", hookText.slice(0, 200));
+
 
   await browser.close();
 })();
